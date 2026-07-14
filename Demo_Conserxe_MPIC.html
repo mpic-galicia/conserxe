@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Conserxe do Camiño · Km 0 Ferrol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --granito:#57544e; --granito-osc:#3b3934; --atlantico:#3d4a56; --atlantico-osc:#2c3640;
+  --pergamino:#f3efe4; --papel:#fbf9f3; --flecha:#c9a227; --flecha-osc:#a8861d;
+  --sello:#7d9b76; --tinta:#2b2a26; --linea:#ddd6c4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Public Sans',system-ui,sans-serif;background:var(--granito-osc);color:var(--tinta);
+  display:flex;justify-content:center}
+.phone{width:100%;max-width:430px;min-height:100vh;background:var(--pergamino);display:flex;flex-direction:column;position:relative}
+
+/* cabecera pétrea */
+header{background:linear-gradient(160deg,#6a675f,#4c4a44 60%,#403e39);color:#f4f1e8;padding:18px 18px 14px;position:relative;overflow:hidden}
+header::after{content:"";position:absolute;inset:0;opacity:.12;background:
+ radial-gradient(1px 1px at 12% 30%,#fff 50%,transparent 51%),
+ radial-gradient(1px 1px at 40% 70%,#fff 50%,transparent 51%),
+ radial-gradient(1.5px 1.5px at 70% 20%,#000 50%,transparent 51%),
+ radial-gradient(1px 1px at 85% 60%,#fff 50%,transparent 51%),
+ radial-gradient(1px 1px at 25% 85%,#000 50%,transparent 51%);background-size:90px 90px}
+.eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--flecha);font-weight:700}
+h1{font-family:'Fraunces',serif;font-weight:700;font-size:30px;line-height:1.05;margin-top:4px}
+.sub{font-size:13px;opacity:.85;margin-top:6px}
+.langs{position:absolute;top:14px;right:14px;display:flex;gap:6px;z-index:2}
+.langs button{border:1px solid rgba(255,255,255,.4);background:transparent;color:#f4f1e8;font-size:11px;font-weight:700;
+  padding:4px 8px;border-radius:20px;cursor:pointer}
+.langs button.on{background:var(--flecha);border-color:var(--flecha);color:#3b3220}
+
+/* tarjeta etapa (e-ink) */
+.etapa{margin:-10px 14px 0;background:var(--papel);border:1px solid var(--linea);border-radius:14px;
+  box-shadow:0 6px 18px rgba(43,42,38,.18);padding:14px 16px;position:relative;z-index:1}
+.etapa .tag{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#8a8577;font-weight:700}
+.etapa .ruta{font-family:'Fraunces',serif;font-size:22px;font-weight:700;margin:2px 0 6px}
+.datos{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:#4c4a44}
+.datos b{color:var(--tinta)}
+
+/* accesos rápidos */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:14px}
+.grid button{background:var(--papel);border:1px solid var(--linea);border-radius:12px;padding:10px 4px 8px;
+  font-family:inherit;font-size:11.5px;font-weight:600;color:var(--atlantico-osc);cursor:pointer;line-height:1.2}
+.grid button span{display:block;font-size:20px;margin-bottom:4px}
+.grid button:active{background:#efe9d8}
+
+/* chat */
+.chat{flex:1;display:flex;flex-direction:column;padding:0 14px 10px;min-height:260px}
+.chat-log{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:6px 2px 12px}
+.msg{max-width:86%;padding:10px 13px;border-radius:14px;font-size:14.5px;line-height:1.45;white-space:pre-wrap}
+.msg.bot{background:var(--papel);border:1px solid var(--linea);border-bottom-left-radius:4px;align-self:flex-start}
+.msg.yo{background:var(--atlantico);color:#eef3f6;border-bottom-right-radius:4px;align-self:flex-end}
+.msg.bot .who{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--flecha-osc);font-weight:700;margin-bottom:3px}
+.pensando{align-self:flex-start;color:#8a8577;font-size:13px;padding:4px 8px}
+.entrada{display:flex;gap:8px}
+.entrada input{flex:1;border:1px solid var(--linea);border-radius:24px;padding:12px 16px;font:inherit;font-size:15px;background:var(--papel)}
+.entrada input:focus{outline:2px solid var(--flecha);outline-offset:1px}
+.entrada button{border:none;background:var(--flecha);color:#3b3220;font-weight:700;border-radius:24px;padding:0 18px;font-size:14px;cursor:pointer}
+.entrada button:disabled{opacity:.5}
+
+/* sello */
+.sello-bar{background:var(--atlantico-osc);color:#dfe8ef;padding:12px 14px 16px}
+.sello-bar .titulo{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#9fb4c4;font-weight:700;margin-bottom:8px}
+.cred{display:flex;gap:8px;align-items:center;overflow-x:auto;padding-bottom:6px}
+.hueco{width:56px;height:56px;flex:0 0 auto;border:2px dashed #55677a;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:9.5px;color:#7d93a6;text-align:center;line-height:1.15;font-weight:600}
+.stamp{width:56px;height:56px;flex:0 0 auto;border-radius:50%;background:radial-gradient(circle at 35% 30%,#8fae87,var(--sello));
+  color:#f2f6ef;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,.35);transform:rotate(-8deg);animation:plas .45s cubic-bezier(.2,1.6,.4,1)}
+.stamp small{font-size:8px;font-weight:600;opacity:.9}
+.stamp .v{font-size:20px;line-height:1}
+@keyframes plas{0%{transform:scale(2.2) rotate(-20deg);opacity:0}70%{transform:scale(.92) rotate(-6deg);opacity:1}100%{transform:scale(1) rotate(-8deg)}}
+.acciones{display:flex;gap:8px;margin-top:10px}
+.acciones button{flex:1;border:none;border-radius:12px;padding:12px 8px;font:inherit;font-weight:700;font-size:13.5px;cursor:pointer}
+.b-sello{background:var(--sello);color:#f2f6ef}
+.b-foto{background:transparent;color:#dfe8ef;border:1.5px solid #55677a !important}
+.nota{font-size:10.5px;color:#8fa3b3;margin-top:10px;line-height:1.4}
+.flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:9}
+.flash.on{animation:ff .5s ease-out}
+@keyframes ff{0%{opacity:.95}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.stamp{animation:none}.flash.on{animation:none}}
+</style>
+</head>
+<body>
+<div class="phone">
+  <header>
+    <div class="langs" role="group" aria-label="Idioma">
+      <button class="on" data-l="es">ES</button><button data-l="gl">GL</button><button data-l="en">EN</button>
+    </div>
+    <div class="eyebrow" id="t-eyebrow">Camiño Inglés · Km 0</div>
+    <h1>Ferrol</h1>
+    <div class="sub" id="t-sub">Puerta del Atlántico · has llegado al inicio del Camino</div>
+  </header>
+
+  <section class="etapa" aria-label="Etapa de hoy">
+    <div class="tag" id="t-etapa">Tu etapa de hoy</div>
+    <div class="ruta">Ferrol → Neda</div>
+    <div class="datos">
+      <span><b>15,3 km</b> · 4 h 05 min</span>
+      <span>☀ <b>21 °C</b> · viento NE flojo</span>
+      <span id="t-alb">Albergue de Neda: <b>plazas libres</b></span>
+    </div>
+  </section>
+
+  <nav class="grid" aria-label="Accesos rápidos">
+    <button data-q="comer"><span>🍽</span><i id="q1" style="font-style:normal">Dónde comer</i></button>
+    <button data-q="dormir"><span>🛏</span><i id="q2" style="font-style:normal">Dónde dormir</i></button>
+    <button data-q="farmacia"><span>💊</span><i id="q3" style="font-style:normal">Farmacia</i></button>
+    <button data-q="sos"><span>🆘</span><i id="q4" style="font-style:normal">Emergencias</i></button>
+  </nav>
+
+  <main class="chat">
+    <div class="chat-log" id="log" aria-live="polite"></div>
+    <div class="entrada">
+      <input id="caja" type="text" autocomplete="off" placeholder="Pregúntale al Conserxe…" aria-label="Escribe tu pregunta">
+      <button id="enviar">➤</button>
+    </div>
+  </main>
+
+  <section class="sello-bar">
+    <div class="titulo" id="t-cred">Tu credencial digital · Camiño Inglés</div>
+    <div class="cred" id="cred">
+      <div class="hueco" data-p="FERROL">FERROL<br>Km 0</div>
+      <div class="hueco" data-p="NEDA">NEDA</div>
+      <div class="hueco" data-p="PONTEDEUME">PONTE-<br>DEUME</div>
+      <div class="hueco" data-p="BETANZOS">BETANZOS</div>
+      <div class="hueco" data-p="ORDES">ORDES</div>
+      <div class="hueco" data-p="SANTIAGO">SANTIAGO</div>
+    </div>
+    <div class="acciones">
+      <button class="b-sello" id="bsello">✚ Sellar aquí · Km 0</button>
+      <button class="b-foto" id="bfoto">📷 Foto del momento</button>
+    </div>
+    <div class="nota" id="t-nota">Demo: el sello y la foto se guardan durante esta sesión. En el monolito real, la credencial te acompaña de Ferrol a Santiago y la foto la toma el propio hito, solo si tú la pides.</div>
+  </section>
+</div>
+<div class="flash" id="flash"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+let lang='es';
+const T={
+ es:{eyebrow:'Camiño Inglés · Km 0',sub:'Puerta del Atlántico · has llegado al inicio del Camino',etapa:'Tu etapa de hoy',
+     q:['Dónde comer','Dónde dormir','Farmacia','Emergencias'],cred:'Tu credencial digital · Camiño Inglés',
+     ph:'Pregúntale al Conserxe…',sello:'✚ Sellar aquí · Km 0',foto:'📷 Foto del momento',
+     hola:'Bo Camiño, peregrino. Soy el Conserxe del Km 0. Pregúntame lo que necesites: la etapa, dónde comer, el tiempo, qué ver en Ferrol… estoy aquí para ti.',
+     sellado:'Sello del Km 0 estampado. ¡Que empiece tu Camino! Te quedan 5 etapas hasta Santiago.',
+     yaselo:'Ya tienes el sello del Km 0 en tu credencial. El siguiente te espera en Neda.',
+     fotomsg:'📷 ¡Clic! En el monolito real, ahora mismo la cámara del hito te habría hecho la foto —tú, tu gente y el Km 0— y estaría ya unida a tu sello. La foto del Camino, hecha por el Camino.',
+     alb:'Albergue de Neda: <b>plazas libres</b>'},
+ gl:{eyebrow:'Camiño Inglés · Km 0',sub:'Porta do Atlántico · chegaches ao inicio do Camiño',etapa:'A túa etapa de hoxe',
+     q:['Onde comer','Onde durmir','Farmacia','Emerxencias'],cred:'A túa credencial dixital · Camiño Inglés',
+     ph:'Pregúntalle ao Conserxe…',sello:'✚ Selar aquí · Km 0',foto:'📷 Foto do momento',
+     hola:'Bo Camiño, peregrino. Son o Conserxe do Km 0. Pregúntame o que precises: a etapa, onde comer, o tempo, que ver en Ferrol… aquí estou para ti.',
+     sellado:'Selo do Km 0 estampado. Que comece o teu Camiño! Quédanche 5 etapas ata Santiago.',
+     yaselo:'Xa tes o selo do Km 0 na túa credencial. O seguinte agárdate en Neda.',
+     fotomsg:'📷 Clic! No monolito real, agora mesmo a cámara do fito faríache a foto —ti, a túa xente e o Km 0— e xa estaría unida ao teu selo. A foto do Camiño, feita polo Camiño.',
+     alb:'Albergue de Neda: <b>prazas libres</b>'},
+ en:{eyebrow:'English Way · Km 0',sub:'Gateway of the Atlantic · you are at the very start of the Way',etapa:'Your stage today',
+     q:['Where to eat','Where to sleep','Pharmacy','Emergency'],cred:'Your digital credential · English Way',
+     ph:'Ask the Concierge…',sello:'✚ Stamp here · Km 0',foto:'📷 Photo moment',
+     hola:'Bo Camiño, pilgrim. I am the Km 0 Concierge. Ask me anything: today\'s stage, where to eat, the weather, what to see in Ferrol… I\'m here for you.',
+     sellado:'Km 0 stamp collected. Your Way begins! Five stages to Santiago.',
+     yaselo:'You already have the Km 0 stamp. The next one awaits in Neda.',
+     fotomsg:'📷 Click! At the real monolith, its camera would have just taken your photo —you, your people and Km 0— already attached to your stamp. The Way\'s photo, taken by the Way itself.',
+     alb:'Neda hostel: <b>beds available</b>'}
+};
+function setLang(l){
+  lang=l; const t=T[l];
+  document.querySelectorAll('.langs button').forEach(b=>b.classList.toggle('on',b.dataset.l===l));
+  $('#t-eyebrow').textContent=t.eyebrow; $('#t-sub').textContent=t.sub; $('#t-etapa').textContent=t.etapa;
+  ['#q1','#q2','#q3','#q4'].forEach((s,i)=>$(s).textContent=t.q[i]);
+  $('#t-cred').textContent=t.cred; $('#caja').placeholder=t.ph;
+  $('#bsello').textContent=t.sello; $('#bfoto').textContent=t.foto; $('#t-alb').innerHTML=t.alb;
+}
+document.querySelectorAll('.langs button').forEach(b=>b.onclick=()=>setLang(b.dataset.l));
+
+// ---- chat ----
+const log=$('#log'); const hist=[];
+function burbuja(txt,quien){
+  const d=document.createElement('div'); d.className='msg '+quien;
+  if(quien==='bot'){const w=document.createElement('div');w.className='who';w.textContent='Conserxe';d.appendChild(w);}
+  d.appendChild(document.createTextNode(txt));
+  log.appendChild(d); log.scrollTop=log.scrollHeight; return d;
+}
+burbuja(T.es.hola,'bot');
+
+
+// ---- modo sin conexión: respuestas preparadas ----
+const OFF={
+ comer:{es:'Junto al Km 0, la zona del puerto de Curuxeiras y el barrio de la Magdalena concentran tabernas y cocina gallega — pulpo, pescado de la ría y menú del peregrino. El monolito real te mostraría aquí los locales abiertos en este momento.',
+        gl:'A carón do Km 0, a zona do porto de Curuxeiras e o barrio da Magdalena concentran tabernas e cociña galega — polbo, peixe da ría e menú do peregrino. O monolito real amosaríache aquí os locais abertos neste intre.',
+        en:'Right by Km 0, the Curuxeiras harbour area and the Magdalena quarter are full of taverns with Galician cooking — octopus, fresh fish and pilgrim menus. The real monolith would show you what is open right now.'},
+ dormir:{es:'Para esta etapa: albergue público de Neda al final (junto a la ría) y pensiones en el centro de Ferrol si sales mañana. El monolito real te mostraría plazas libres en tiempo real.',
+        gl:'Para esta etapa: albergue público de Neda ao final (á beira da ría) e pensións no centro de Ferrol se saes mañá. O monolito real amosaríache prazas libres en tempo real.',
+        en:'For this stage: the public hostel in Neda at the end (by the estuary), and guesthouses in central Ferrol if you leave tomorrow. The real monolith would show live availability.'},
+ farmacia:{es:'En el centro de Ferrol, a 5-10 minutos a pie del muelle, hay varias farmacias; siempre hay una de guardia. El monolito real te indicaría aquí la de guardia de hoy con su dirección.',
+        gl:'No centro de Ferrol, a 5-10 minutos a pé do peirao, hai varias farmacias; sempre hai unha de garda. O monolito real indicaríache aquí a de garda de hoxe co seu enderezo.',
+        en:'In central Ferrol, 5-10 minutes on foot from the quay, there are several pharmacies; one is always on duty. The real monolith would show today\'s duty pharmacy and its address.'},
+ sos:{es:'Emergencias: llama al 112 (funciona sin cobertura de tu operador). Indica que estás en el Camino Inglés y el punto más cercano — cada monolito y mojón de la red te da su localización exacta.',
+        gl:'Emerxencias: chama ao 112 (funciona sen cobertura do teu operador). Indica que estás no Camiño Inglés e o punto máis próximo — cada monolito e mollón da rede dáche a súa localización exacta.',
+        en:'Emergency: call 112 (works even without your carrier\'s coverage). Say you are on the English Way and the nearest waypoint — every monolith and marker gives you its exact location.'},
+ tiempo:{es:'Hoy en Ferrol: sol y 21 °C con viento NE flojo — mañana perfecta para la etapa a Neda. El monolito real te daría la previsión oficial actualizada al minuto.',
+        gl:'Hoxe en Ferrol: sol e 21 °C con vento NE frouxo — mañá perfecta para a etapa a Neda. O monolito real daríache a previsión oficial actualizada ao minuto.',
+        en:'Ferrol today: sunny, 21 °C with a light NE breeze — a perfect morning for the stage to Neda. The real monolith would give you the official up-to-the-minute forecast.'},
+ ver:{es:'Antes de salir, dos imprescindibles a un paso: el barrio de la Magdalena, con su trazado ilustrado único, y la ría con el castillo de San Felipe. Y la foto en el Km 0, claro.',
+        gl:'Antes de saír, dous imprescindibles a un paso: o barrio da Magdalena, co seu trazado ilustrado único, e a ría co castelo de San Felipe. E a foto no Km 0, claro.',
+        en:'Before you set off, two must-sees close by: the Magdalena quarter with its unique Enlightenment grid, and the estuary with San Felipe castle. And the Km 0 photo, of course.'},
+ etapa:{es:'Tu etapa de hoy: Ferrol → Neda, 15,3 km, unas 4 horas por la orilla de la ría. Llana y hermosa: sal con agua y sella en Neda al llegar.',
+        gl:'A túa etapa de hoxe: Ferrol → Neda, 15,3 km, unhas 4 horas pola beira da ría. Chá e fermosa: sae con auga e sela en Neda ao chegar.',
+        en:'Today\'s stage: Ferrol → Neda, 15.3 km, about 4 hours along the estuary shore. Flat and beautiful — carry water and stamp in Neda on arrival.'},
+ generic:{es:'Buena pregunta, peregrino. En el monolito real tendría la respuesta al momento; en esta demostración atiendo mejor a lo esencial: la etapa, dónde comer o dormir, farmacias, el tiempo y tu sello. ¡Prueba los botones de arriba!',
+        gl:'Boa pregunta, peregrino. No monolito real tería a resposta ao momento; nesta demostración atendo mellor ao esencial: a etapa, onde comer ou durmir, farmacias, o tempo e o teu selo. Proba os botóns de arriba!',
+        en:'Good question, pilgrim. The real monolith would answer instantly; in this demo I am best at the essentials — the stage, food, beds, pharmacies, weather and your stamp. Try the buttons above!'}
+};
+function offline(q){
+  const t=q.toLowerCase();
+  const pick=k=>OFF[k][lang];
+  if(/(comer|comida|tapear|restaur|eat|food|lunch|dinner|cea|xantar)/.test(t))return pick('comer');
+  if(/(dormir|alberg|hostel|sleep|hotel|pensi|durmir|cama|bed)/.test(t))return pick('dormir');
+  if(/(farmacia|pharmac|medic|botiqu)/.test(t))return pick('farmacia');
+  if(/(emergen|emerxen|urxen|urgen|112|sos|help|socorro)/.test(t))return pick('sos');
+  if(/(tiempo|weather|lluvi|chuvia|rain|clima|vento|viento|temperat)/.test(t))return pick('tiempo');
+  if(/(ver|visitar|monument|castillo|castelo|magdalena|museo|see|visit|sight)/.test(t))return pick('ver');
+  if(/(etapa|stage|neda|ruta|km|camino|camiño|way|distancia)/.test(t))return pick('etapa');
+  return pick('generic');
+}
+
+const SYS=`Eres el "Conserxe do Camiño", el asistente del monolito inteligente MPIC situado en el Km 0 del Camino Inglés, en Ferrol (Galicia). Hoy es una mañana de julio, hace 21°C y sol. La etapa de hoy es Ferrol→Neda, 15,3 km, unas 4 horas. Atiendes a peregrinos y visitantes con calidez gallega y respuestas CORTAS (2-4 frases), prácticas y concretas sobre: el Camino Inglés y sus etapas (Ferrol, Neda, Pontedeume, Betanzos, Ordes, Santiago), Ferrol y su patrimonio (barrio de la Magdalena, Arsenal, castillo de San Felipe), dónde comer/dormir/servicios (da recomendaciones genéricas y verosímiles de tipo de sitio y zona, aclarando que los detalles en tiempo real los daría el sistema del monolito), el tiempo, la credencial y el sello digital. Responde SIEMPRE en el idioma en que te escriban. Si preguntan por emergencias: 112. Si te preguntan cosas ajenas al Camino o la ciudad, redirige con simpatía. Nunca inventes nombres exactos de negocios como si fueran datos en vivo.`;
+
+async function preguntar(txt){
+  burbuja(txt,'yo'); hist.push({role:'user',content:txt});
+  const esp=document.createElement('div'); esp.className='pensando'; esp.textContent='…'; log.appendChild(esp); log.scrollTop=log.scrollHeight;
+  $('#enviar').disabled=true;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:SYS,messages:hist.slice(-12)})});
+    const d=await r.json();
+    let out=(d.content||[]).map(c=>c.type==='text'?c.text:'').join('').trim();
+    if(!out) out=offline(txt);
+    hist.push({role:'assistant',content:out});
+    esp.remove(); burbuja(out,'bot');
+  }catch(e){ esp.remove(); const off=offline(txt); hist.push({role:'assistant',content:off}); burbuja(off,'bot'); }
+  $('#enviar').disabled=false;
+}
+$('#enviar').onclick=()=>{const v=$('#caja').value.trim(); if(v){$('#caja').value='';preguntar(v);}};
+$('#caja').addEventListener('keydown',e=>{if(e.key==='Enter')$('#enviar').click();});
+const Q={comer:{es:'¿Dónde puedo comer bien cerca del Km 0?',gl:'Onde podo comer ben preto do Km 0?',en:'Where can I eat well near Km 0?'},
+         dormir:{es:'¿Dónde puedo dormir esta noche en la etapa?',gl:'Onde podo durmir esta noite na etapa?',en:'Where can I sleep tonight on this stage?'},
+         farmacia:{es:'¿Hay alguna farmacia abierta cerca?',gl:'Hai algunha farmacia aberta preto?',en:'Is there a pharmacy open nearby?'},
+         sos:{es:'¿Qué hago en caso de emergencia en el Camino?',gl:'Que fago en caso de emerxencia no Camiño?',en:'What should I do in an emergency on the Way?'}};
+document.querySelectorAll('.grid button').forEach(b=>b.onclick=()=>preguntar(Q[b.dataset.q][lang]));
+
+// ---- sello y foto ----
+let sellado=false;
+$('#bsello').onclick=()=>{
+  if(sellado){ burbuja(T[lang].yaselo,'bot'); return; }
+  const h=document.querySelector('.hueco[data-p="FERROL"]');
+  const s=document.createElement('div'); s.className='stamp';
+  const hoy=new Date(); const f=hoy.getDate()+'/'+(hoy.getMonth()+1);
+  s.innerHTML='<div class="v">⛿</div><small>KM 0 · '+f+'</small>';
+  h.replaceWith(s); sellado=true; burbuja(T[lang].sellado,'bot');
+};
+$('#bfoto').onclick=()=>{
+  const fl=$('#flash'); fl.classList.remove('on'); void fl.offsetWidth; fl.classList.add('on');
+  burbuja(T[lang].fotomsg,'bot');
+};
+</script>
+</body>
+</html>
