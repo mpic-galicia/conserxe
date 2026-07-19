@@ -35,8 +35,8 @@ body{font-family:'Public Sans',system-ui,sans-serif;background:var(--granito-osc
   font-size:16px;padding:14px 28px;border-radius:28px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35)}
 
 /* cabecera pétrea */
-header{background:linear-gradient(160deg,#6a675f,#4c4a44 60%,#403e39);color:#f4f1e8;padding:calc(34px + env(safe-area-inset-top)) 18px 22px;position:relative;overflow:hidden}
-header::after{content:"";position:absolute;inset:0;opacity:.12;background:
+header{background:linear-gradient(160deg,#6a675f,#4c4a44 60%,#403e39);color:#f4f1e8;padding:calc(34px + env(safe-area-inset-top)) 18px 26px;position:relative;z-index:5}
+header::after{content:"";position:absolute;inset:0;opacity:.12;pointer-events:none;background:
  radial-gradient(1px 1px at 12% 30%,#fff 50%,transparent 51%),
  radial-gradient(1px 1px at 40% 70%,#fff 50%,transparent 51%),
  radial-gradient(1.5px 1.5px at 70% 20%,#000 50%,transparent 51%),
@@ -46,8 +46,8 @@ header::after{content:"";position:absolute;inset:0;opacity:.12;background:
 h1{font-family:'Fraunces',serif;font-weight:700;font-size:30px;line-height:1.05;margin-top:4px}
 .sub{font-size:13px;opacity:.85;margin-top:6px}
 .langs{display:flex;gap:6px;margin-bottom:20px;position:relative;z-index:2;width:100%}
-.langs button{flex:1;border:1px solid rgba(255,255,255,.4);background:transparent;color:#f4f1e8;font-size:14px;font-weight:700;
-  padding:10px 0;border-radius:22px;cursor:pointer;text-align:center}
+.langs button{flex:1;border:1px solid rgba(255,255,255,.4);background:transparent;color:#f4f1e8;font-size:15px;font-weight:700;
+  height:46px;line-height:1;display:flex;align-items:center;justify-content:center;border-radius:23px;cursor:pointer;padding:0}
 .langs button.on{background:var(--flecha);border-color:var(--flecha);color:#3b3220}
 
 /* tarjeta etapa (e-ink) */
