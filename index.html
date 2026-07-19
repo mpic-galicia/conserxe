@@ -35,7 +35,7 @@ body{font-family:'Public Sans',system-ui,sans-serif;background:var(--granito-osc
   font-size:16px;padding:14px 28px;border-radius:28px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35)}
 
 /* cabecera pétrea */
-header{background:linear-gradient(160deg,#6a675f,#4c4a44 60%,#403e39);color:#f4f1e8;padding:calc(14px + env(safe-area-inset-top)) 18px 14px;position:relative;overflow:hidden}
+header{background:linear-gradient(160deg,#6a675f,#4c4a44 60%,#403e39);color:#f4f1e8;padding:calc(34px + env(safe-area-inset-top)) 18px 22px;position:relative;overflow:hidden}
 header::after{content:"";position:absolute;inset:0;opacity:.12;background:
  radial-gradient(1px 1px at 12% 30%,#fff 50%,transparent 51%),
  radial-gradient(1px 1px at 40% 70%,#fff 50%,transparent 51%),
@@ -45,13 +45,13 @@ header::after{content:"";position:absolute;inset:0;opacity:.12;background:
 .eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--flecha);font-weight:700}
 h1{font-family:'Fraunces',serif;font-weight:700;font-size:30px;line-height:1.05;margin-top:4px}
 .sub{font-size:13px;opacity:.85;margin-top:6px}
-.langs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;position:relative;z-index:2}
-.langs button{border:1px solid rgba(255,255,255,.4);background:transparent;color:#f4f1e8;font-size:14px;font-weight:700;
-  padding:8px 12px;border-radius:22px;cursor:pointer;min-width:44px}
+.langs{display:flex;gap:6px;margin-bottom:20px;position:relative;z-index:2;width:100%}
+.langs button{flex:1;border:1px solid rgba(255,255,255,.4);background:transparent;color:#f4f1e8;font-size:14px;font-weight:700;
+  padding:10px 0;border-radius:22px;cursor:pointer;text-align:center}
 .langs button.on{background:var(--flecha);border-color:var(--flecha);color:#3b3220}
 
 /* tarjeta etapa (e-ink) */
-.etapa{margin:12px 14px 0;background:var(--papel);border:1px solid var(--linea);border-radius:14px;
+.etapa{margin:16px 14px 0;background:var(--papel);border:1px solid var(--linea);border-radius:14px;
   box-shadow:0 6px 18px rgba(43,42,38,.18);padding:14px 16px;position:relative;z-index:1}
 .etapa .tag{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:#8a8577;font-weight:700}
 .etapa .ruta{font-family:'Fraunces',serif;font-size:22px;font-weight:700;margin:2px 0 6px}
