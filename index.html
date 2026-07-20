@@ -266,6 +266,14 @@ function elegirVoz(){
 function hablar(txt){
   if(!vozOn || !('speechSynthesis' in window)) return;
   speechSynthesis.cancel();
+  // En pantalla se escribe «Km 0», pero la voz dice el nombre completo
+  const KM0_VOZ={es:'Kilómetro cero del Camino Inglés',
+                 gl:'Quilómetro cero do Camiño Inglés',
+                 en:'Kilometre zero of the English Way',
+                 fr:'Kilomètre zéro du Chemin Anglais'};
+  const km0=KM0_VOZ[lang]||KM0_VOZ.es;
+  // «Km 0 del Camino Inglés» (o variantes) → forma hablada completa, sin duplicar
+  txt=txt.replace(/\bkm\s*0(\s+(del?\s+Cami[nñ]o\s+Ingl[eé]s|do\s+Cami[ñn]o\s+Ingl[eé]s|of\s+the\s+English\s+Way|du\s+Chemin\s+Anglais))?/gi,km0);
   const limpio=txt.replace(/[📷🗺📍ℹ️✚⛿🔊🎤]/g,'').replace(/\s+/g,' ').trim();
   if(!limpio) return;
   // trocear en frases: algunos móviles cortan los textos largos
