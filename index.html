@@ -264,27 +264,42 @@ function elegirVoz(){
   return grupo.sort((a,b)=>puntuarVoz(b)-puntuarVoz(a))[0];
 }
 function hablar(txt){
-  if(!vozOn || !('speechSynthesis' in window)) return;
-  speechSynthesis.cancel();
+  if(!vozOn) return;
   // En pantalla se escribe «Km 0», pero la voz dice el nombre completo
   const KM0_VOZ={es:'Kilómetro cero del Camino Inglés',
                  gl:'Quilómetro cero do Camiño Inglés',
                  en:'Kilometre zero of the English Way',
-                 fr:'Kilomètre zéro du Chemin Anglais'};
+                 fr:'Kilomètre zéro du Chemin Anglais',
+                 de:'Kilometer null des Englischen Wegs'};
   const km0=KM0_VOZ[lang]||KM0_VOZ.es;
-  // «Km 0 del Camino Inglés» (o variantes) → forma hablada completa, sin duplicar
   txt=txt.replace(/\bkm\s*0(\s+(del?\s+Cami[nñ]o\s+Ingl[eé]s|do\s+Cami[ñn]o\s+Ingl[eé]s|of\s+the\s+English\s+Way|du\s+Chemin\s+Anglais))?/gi,km0);
   const limpio=txt.replace(/[📷🗺📍ℹ️✚⛿🔊🎤]/g,'').replace(/\s+/g,' ').trim();
   if(!limpio) return;
-  // trocear en frases: algunos móviles cortan los textos largos
+  // VOZ NEURONAL DEL SERVIDOR (v7): pide el MP3 a /api/voz y lo reproduce.
+  // Si el servidor no responde (p.ej. demo en GitHub Pages), cae a la voz del navegador.
+  detenerVoz();
+  fetch('/api/voz',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({texto:limpio.slice(0,2000),idioma:lang})})
+  .then(r=>{ if(!r.ok) throw 0; return r.blob(); })
+  .then(b=>{
+    window._vozAudio=new Audio(URL.createObjectURL(b));
+    window._vozAudio.play();
+  })
+  .catch(()=>hablarNavegador(limpio));
+}
+function detenerVoz(){
+  if(window._vozAudio){ window._vozAudio.pause(); window._vozAudio=null; }
+  if('speechSynthesis' in window) speechSynthesis.cancel();
+}
+function hablarNavegador(limpio){
+  if(!('speechSynthesis' in window)) return;
   const frases=limpio.match(/[^.!?…]+[.!?…]*/g)||[limpio];
   const v=elegirVoz();
   frases.forEach(f=>{
     const u=new SpeechSynthesisUtterance(f.trim());
     u.lang=v?v.lang:(lang==='gl'?'es-ES':VLANG[lang]);
     if(v) u.voice=v;
-    u.rate=1;
-    u.pitch=1.05;
+    u.rate=1; u.pitch=1.05;
     speechSynthesis.speak(u);
   });
 }
@@ -304,6 +319,10 @@ function setLang(l){
   $('#l-ruta').textContent=t.ruta; $('#l-km0').textContent=t.km0; $('#l-visit').textContent=t.visit;
   if(rec) rec.lang = VLANG[l];
   if(typeof portadaLang==='function') portadaLang(l);
+  // v8: retraducir el saludo del Conserxe si aún no hay conversación
+  if(typeof saludoInicial!=='undefined' && hist.length===0){
+    saludoInicial.lastChild.nodeValue = T[l].hola;
+  }
 }
 document.querySelectorAll('.langs button').forEach(b=>b.onclick=()=>setLang(b.dataset.l));
 
@@ -328,7 +347,7 @@ function burbuja(txt,quien){
   if(quien==='bot' && typeof hablar==='function') hablar(txt);
   return d;
 }
-burbuja(T.es.hola,'bot');
+const saludoInicial = burbuja(T[lang].hola,'bot');
 
 
 // ---- modo sin conexión: respuestas preparadas ----
@@ -400,10 +419,10 @@ async function preguntar(txt){
   const esp=document.createElement('div'); esp.className='pensando'; esp.textContent='…'; log.appendChild(esp); log.scrollTop=log.scrollHeight;
   $('#enviar').disabled=true;
   try{
-    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:SYS,messages:hist.slice(-12)})});
+    const r=await fetch('/api/conserxe',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({mensajes:hist.slice(-10),idioma:lang})});
     const d=await r.json();
-    let out=(d.content||[]).map(c=>c.type==='text'?c.text:'').join('').trim();
+    let out=(d.respuesta||'').trim();
     if(!out) out=offline(txt);
     hist.push({role:'assistant',content:out});
     esp.remove(); burbuja(out,'bot');
@@ -417,7 +436,7 @@ $('#bvoz').onclick=()=>{
   vozOn=!vozOn;
   $('#bvoz').classList.toggle('on',vozOn);
   $('#bvoz').setAttribute('aria-pressed',vozOn);
-  if(!vozOn){ speechSynthesis.cancel(); return; }
+  if(!vozOn){ detenerVoz(); return; }
   cargarVoces();
   // desbloqueo: los móviles solo permiten hablar tras un toque del usuario — este toque
   hablar(T[lang].hola);
